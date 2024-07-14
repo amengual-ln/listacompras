@@ -4,10 +4,10 @@
     <hr>
     <Product v-for="product in store.getChecked" :key="product.id" :product="product" />
   </section>
-  <div class="fixed bottom-0 w-full grid grid-cols-[1fr,100px] text-xl bg-[#eee]">
+  <div class="fixed bottom-0 w-full flex text-xl bg-[#eee]">
     <input type="text" v-model="newProduct" @keyup.enter="handleAddProduct"
-      class="text-2xl pl-2 py-4 border outline-none">
-    <button @click="handleAddProduct" class="bg-gray-800 text-white hover:bg-black">></button>
+      class="text-2xl pl-2 py-4 border outline-none w-[80%]">
+    <button @click="handleAddProduct" class="bg-gray-800 text-white hover:bg-black w-[20%]">+</button>
   </div>
 </template>
 
