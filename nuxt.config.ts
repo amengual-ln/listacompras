@@ -9,7 +9,7 @@ export default defineNuxtConfig({
       autoprefixer: {},
     },
   },
-  modules: ["@pinia/nuxt", "@nuxtjs/supabase"],
+  modules: ["@pinia/nuxt", "@nuxtjs/supabase", "@formkit/auto-animate"],
   supabase: {
     redirect: false
   },

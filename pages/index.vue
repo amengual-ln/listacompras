@@ -1,5 +1,5 @@
 <template>
-  <section class="flex flex-col gap-4 p-4">
+  <section class="flex flex-col gap-4 p-4" v-auto-animate>
     <Product v-for="product in store.getUnchecked" :key="product.id" :product="product" />
     <hr>
     <Product v-for="product in store.getChecked" :key="product.id" :product="product" />
