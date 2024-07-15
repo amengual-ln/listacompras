@@ -11,6 +11,9 @@ export const useProductsStore = defineStore('products', {
     },
     addProduct(product) {
       this.products.push(product)
+    },
+    deleteProduct(id) {
+      this.products = this.products.filter(product => product.id !== id)
     }
   },
   getters: {
