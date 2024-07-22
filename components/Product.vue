@@ -28,7 +28,7 @@ const handleDeleteProduct = async () => {
   deleteTimeout = setTimeout(async () => {
     store.deleteProduct(product.id)
     const { deleteError } = await supabase.from('products').delete().eq('id', product.id)
-  }, 1000)
+  }, 3000)
 }
 
 const handleDeleteAbort = () => {
