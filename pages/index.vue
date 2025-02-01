@@ -29,6 +29,7 @@ const handleAddProduct = async () => {
   // Uncheck product if it already exists
   if (store.getChecked.some((item) => item.name.toLowerCase() === newProduct.value.toLowerCase())) {
     store.getChecked.find((item) => item.name.toLowerCase() === newProduct.value.toLowerCase()).checked = false
+    const { data, error } = await supabase.from('products').update({ checked: false }).eq('name', newProduct.value.trim())
     newProduct.value = ''
     return
   }
