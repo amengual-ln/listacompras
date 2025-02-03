@@ -21,7 +21,7 @@ const newProduct = ref('')
 const handleAddProduct = async () => {
   if (newProduct.value.trim() === '') return
   // Don't add product if it already exists
-  if (store.getUnchecked.some((item) => item.name.toLowerCase() === newProduct.value.toLowerCase())) {
+  if (store.getUnchecked.some((item) => item.name.toLowerCase() === newProduct.value.toLowerCase().trim())) {
     toast('Produto ya existente', { type: 'error' })
     newProduct.value = ''
     return
