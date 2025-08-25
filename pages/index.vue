@@ -20,22 +20,37 @@ const newProduct = ref('')
 
 const handleAddProduct = async () => {
   if (newProduct.value.trim() === '') return
+
+  if (newProduct.value.includes(',')) {
+    const products = newProduct.value.split(',').map(product => product.trim())
+
+    products.forEach(product => {
+      addProduct(product)
+    })
+    newProduct.value = ''
+    return
+  }
+
+  addProduct(newProduct.value)
+  newProduct.value = ''
+}
+
+const addProduct = async (product) => {
   // Don't add product if it already exists
-  if (store.getUnchecked.some((item) => item.name.toLowerCase() === newProduct.value.toLowerCase().trim())) {
+  if (store.getUnchecked.some((item) => item.name.toLowerCase() === product.toLowerCase().trim())) {
     toast('Produto ya existente', { type: 'error' })
     newProduct.value = ''
     return
   }
   // Uncheck product if it already exists
-  if (store.getChecked.some((item) => item.name.toLowerCase() === newProduct.value.toLowerCase())) {
-    store.getChecked.find((item) => item.name.toLowerCase() === newProduct.value.toLowerCase()).checked = false
-    const { data, error } = await supabase.from('products').update({ checked: false }).eq('name', newProduct.value.trim())
+  if (store.getChecked.some((item) => item.name.toLowerCase() === product.toLowerCase())) {
+    store.getChecked.find((item) => item.name.toLowerCase() === product.toLowerCase()).checked = false
+    const { data, error } = await supabase.from('products').update({ checked: false }).eq('name', product)
     newProduct.value = ''
     return
   }
-  const { data, error } = await supabase.from('products').insert([{ name: newProduct.value.trim() }]).select()
+  const { data, error } = await supabase.from('products').insert([{ name: product }]).select()
   store.addProduct(data[0])
-
-  newProduct.value = ''
 }
+
 </script>
