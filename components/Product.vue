@@ -11,6 +11,7 @@
 </template>
 
 <script setup>
+import { Toaster, toast } from 'vue-sonner'
 const { product } = defineProps(['product'])
 const supabase = useSupabaseClient()
 const store = useProductsStore()
@@ -18,7 +19,12 @@ let deleteTimeout
 
 const handleProductCheck = async () => {
   const prevValue = product.checked
-  store.checkProduct(product.id) // Optimistic
+  store.checkProduct(product.id) // Optimistic update
   const { data, error } = await supabase.from('products').update({ checked: !prevValue, updated_at: new Date().toISOString() }).eq('id', product.id)
+
+  if (error) {
+    store.checkProduct(product.id) // Revert on error
+    toast('Error al actualizar el producto', { type: 'error' })
+  }
 }
 </script>

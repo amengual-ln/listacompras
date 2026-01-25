@@ -21,36 +21,55 @@ const newProduct = ref('')
 const handleAddProduct = async () => {
   if (newProduct.value.trim() === '') return
 
-  if (newProduct.value.includes(',')) {
-    const products = newProduct.value.split(',').map(product => product.trim())
+  const productNames = newProduct.value.split(',').map(p => p.trim()).filter(p => p !== '');
 
-    products.forEach(product => {
-      addProduct(product)
-    })
-    newProduct.value = ''
-    return
+  if (productNames.length > 0) {
+    await addProducts(productNames);
   }
 
-  addProduct(newProduct.value)
   newProduct.value = ''
 }
 
-const addProduct = async (product) => {
-  // Don't add product if it already exists
-  if (store.getUnchecked.some((item) => item.name.toLowerCase() === product.toLowerCase().trim())) {
-    toast('Produto ya existente', { type: 'error' })
-    newProduct.value = ''
-    return
+const addProducts = async (products) => {
+  const newProducts = [];
+  const productsToUncheck = [];
+
+  for (const productName of products) {
+    const lowerCaseProductName = productName.toLowerCase();
+
+    // Don't add product if it already exists and is unchecked
+    if (store.getUnchecked.some((item) => item.name.toLowerCase() === lowerCaseProductName)) {
+      toast(`Produto '${productName}' ya existente`, { type: 'error' })
+      continue; // Skip to the next product
+    }
+
+    // Find if product exists in the checked list
+    const existingChecked = store.getChecked.find((item) => item.name.toLowerCase() === lowerCaseProductName);
+    if (existingChecked) {
+      productsToUncheck.push(existingChecked);
+    } else {
+      newProducts.push({ name: productName });
+    }
   }
-  // Uncheck product if it already exists
-  if (store.getChecked.some((item) => item.name.toLowerCase() === product.toLowerCase())) {
-    store.getChecked.find((item) => item.name.toLowerCase() === product.toLowerCase()).checked = false
-    const { data, error } = await supabase.from('products').update({ checked: false }).eq('name', product)
-    newProduct.value = ''
-    return
+
+  // Uncheck products that were checked
+  if (productsToUncheck.length > 0) {
+    const idsToUncheck = productsToUncheck.map(p => p.id);
+    store.toggleCheckedByIds(idsToUncheck, false);
+    await supabase.from('products').update({ checked: false }).in('id', idsToUncheck);
+    productsToUncheck.forEach(p => toast(`'${p.name}' movido a la lista de compra.`));
   }
-  const { data, error } = await supabase.from('products').insert([{ name: product }]).select()
-  store.addProduct(data[0])
+
+  // Add all new products in a single batch
+  if (newProducts.length > 0) {
+    const { data, error } = await supabase.from('products').insert(newProducts).select();
+    if (data) {
+      store.addProducts(data);
+    }
+    if (error) {
+      toast('Error al agregar productos', { type: 'error' });
+    }
+  }
 }
 
 </script>
