@@ -16,7 +16,10 @@ export const useProductsStore = defineStore('products', {
       }
     },
     addProducts(products) {
-      this.products.push(...products)
+      const newProducts = products.filter(p => !this.products.some(existing => existing.id === p.id));
+      if (newProducts.length > 0) {
+        this.products.push(...newProducts);
+      }
     },
     toggleCheckedByIds(ids, checked) {
       this.products = this.products.map(product => {

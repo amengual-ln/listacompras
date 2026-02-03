@@ -2,7 +2,7 @@
   <article
     :class="`text-xl font-medium text-neutral-700 flex justify-between items-center bg-gray-100 p-4 rounded-xl select-none ${product.checked && 'opacity-75'}`">
     <h2 :class="product.checked && 'line-through opacity-50'">{{ product.name }}</h2>
-    <div @click="handleProductCheck" class="bg-[#eee] rounded-full cursor-pointer">
+            <div @click="handleProductCheck" class="bg-[#eee] rounded-full cursor-pointer">
       <span :class="`${!product.checked && 'opacity-0'} h-12 text-neutral-700`">
         <img src="/check.svg" class="h-12" alt="x">
       </span>
@@ -15,12 +15,11 @@ import { Toaster, toast } from 'vue-sonner'
 const { product } = defineProps(['product'])
 const supabase = useSupabaseClient()
 const store = useProductsStore()
-let deleteTimeout
 
 const handleProductCheck = async () => {
   const prevValue = product.checked
   store.checkProduct(product.id) // Optimistic update
-  const { data, error } = await supabase.from('products').update({ checked: !prevValue, updated_at: new Date().toISOString() }).eq('id', product.id)
+  const { error } = await supabase.from('products').update({ checked: !prevValue, updated_at: new Date().toISOString() }).eq('id', product.id)
 
   if (error) {
     store.checkProduct(product.id) // Revert on error

@@ -30,13 +30,16 @@ if (data) {
 // Set up Supabase real-time subscription
 const channel = supabase.channel('products')
 .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'products' }, (payload) => {
-  store.addProducts([payload.new])
+  console.log('Realtime INSERT received:', payload);
+  store.addProducts([payload.new]);
 })
 .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'products' }, (payload) => {
-  store.updateProduct(payload.new)
+  console.log('Realtime UPDATE received:', payload);
+  store.updateProduct(payload.new);
 })
 .on('postgres_changes', { event: 'DELETE', schema: 'public', table: 'products' }, (payload) => {
-  store.deleteProduct(payload.old.id)
+  console.log('Realtime DELETE received:', payload);
+  store.deleteProduct(payload.old.id);
 })
 .subscribe((status) => {
   if (status === 'SUBSCRIBED') {
