@@ -49,6 +49,14 @@ const channel = supabase.channel('products')
 
 useHead({
   title: "Lista de compras",
-  favicon: "/cart.webp"
+  link: [
+    { rel: 'icon', href: '/favicon.ico' },
+  ],
+  meta: [
+    { name: 'theme-color', content: '#54C147' },
+    { name: 'apple-mobile-web-app-capable', content: 'yes' },
+    { name: 'apple-mobile-web-app-status-bar-style', content: 'default' },
+    { name: 'apple-mobile-web-app-title', content: 'Compras' },
+  ],
 })
 </script>
